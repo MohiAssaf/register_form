@@ -52,4 +52,11 @@ form{
     font-size: 1rem;
     font-weight: 600;
     color: white;
+    cursor: pointer;
+}
+
+.btn:hover{
+    background-color: white;
+    color: lightblue;
+    transition: 0.3s;
 }
