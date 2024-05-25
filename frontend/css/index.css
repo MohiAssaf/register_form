@@ -1,0 +1,54 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+.title{
+    text-align: center;
+    font-size: 3rem;
+}
+
+.welcome{
+    background-color: lightblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 100vh;
+    gap: 2rem;
+}
+
+.card{
+    background-color: white;
+    width: 20%;
+    height: auto;
+    padding: 2rem;
+    border-radius: 1rem;
+}
+
+.card h2{
+    padding: 10px 0;
+}
+
+.btns{
+    padding-top: 2rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.btns .btn{
+    padding: 0.4rem 1rem;
+    border: 1px solid black;
+    border-radius: 1rem;
+    background-color: lightblue;
+    color: whitesmoke;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btns .btn:hover{
+    background-color: whitesmoke;
+    color: lightblue;
+}
