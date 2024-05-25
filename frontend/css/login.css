@@ -4,7 +4,7 @@
 }
 
 
-.register-form{
+.login-form{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -19,19 +19,19 @@ form{
     border-radius: 1rem;
 }
 
-.register-form .title{
+.login-form .title{
     text-align: center;
 
 }
 
-.register-form .input-box{
+.login-form .input-box{
     position: relative;
     width: 100%;
     height: 2rem;
     margin: 25px 0;
 }
 
-.register-form .input-box input{
+.login-form .input-box input{
     width: 90%;
     height: 1.2rem;
     border: 1px solid black;
@@ -41,7 +41,7 @@ form{
     padding: 0.3rem 0.6rem;
 }
 
-.register-form .input-box i{
+.login-form .input-box i{
     position: absolute;
     right: 20px;
     top: 50%;
@@ -50,16 +50,16 @@ form{
 
 }
 
-.login{
+.register{
     padding-bottom: 1rem;
     text-align: center;
 }
 
-.login a{
+.register a{
     color: lightblue;
 
 }
-.login a:hover{
+.register a:hover{
     text-decoration: none;
 }
 
