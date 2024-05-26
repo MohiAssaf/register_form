@@ -1,5 +1,5 @@
 import socketserver
-import psycopg2
+from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse, parse_qs
 from typing import Tuple
@@ -39,6 +39,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 self.wfile.write(html_page.encode('utf-8'))
         elif path == '/logout':
             self.send_response(302)
+            self.send_header('Set-Cookie', 'sessionid=; Max-Age=0; Path=/')
             self.send_header('Location', '/login')
             self.end_headers()
         
@@ -101,6 +102,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             
             if user:
                 self.send_response(302)
+                self.send_header('Set-Cookie', f'username={username}; Path=/')
                 self.send_header('Location', '/logged-in')
                 self.end_headers()
             else:
@@ -108,6 +110,56 @@ class RequestHandler(BaseHTTPRequestHandler):
                 self.send_header('Content-Type', 'text/plain')
                 self.end_headers()
                 self.wfile.write(b'Invalid credentials')
+                
+        elif path == '/update-data':
+            cookie_header = self.headers.get('Cookie')
+            if not cookie_header:
+                self.send_response(401)
+                self.end_headers()
+                self.wfile.write(b'Unauthorized')
+                return
+            
+            cookie = SimpleCookie(cookie_header)
+            username = cookie.get('username').value
+            
+            first_name = data.get('first_name')[0]
+            last_name = data.get('last_name')[0]
+            password = data.get('newpassword')[0]
+            confirm_password = data.get('newrepassword')[0]
+            
+            if  password != confirm_password:
+                self.send_response(400)
+                self.end_headers()
+                self.wfile.write(b'Passwords do not match')
+                return
+            
+            conn = db_connection()
+            cursor = conn.cursor()
+            
+            update_fields = []
+            update_values = []
+
+            
+            if first_name:
+                update_fields.append("first_name = %s")
+                update_values.append(first_name)
+            if last_name:
+                update_fields.append("last_name = %s")
+                update_values.append(last_name)
+            if password:
+                update_fields.append("password = %s")
+                update_values.append(password)
+                
+            update_values.append(username)
+            print(update_fields)
+            print(update_values)
+            
+            cursor.execute(f"UPDATE users SET {', '.join(update_fields)} WHERE username = %s", tuple(update_values))
+            conn.commit()
+            
+            self.send_response(302)
+            self.send_header('Location', '/logged-in')
+            self.end_headers()
 
 
 
