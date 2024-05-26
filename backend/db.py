@@ -1,5 +1,5 @@
 import psycopg2
-from ..config import db_config
+from config import db_config
 
 
 def db_connection():
@@ -23,7 +23,4 @@ def init_table():
     conn.commit()
     cursor.close()
     conn.close()
-    
-if __name__ == '__main__':
-    init_table()
     
