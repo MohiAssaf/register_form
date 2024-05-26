@@ -37,31 +37,31 @@ class TestServer(unittest.TestCase):
     
         
         
-    # def test_register_page_post(self):
+    def test_register_page_post(self):
         
-    #     register_data = {
-    #         'first_name': 'Mohamed',
-    #         'last_name': 'assaf',
-    #         'email': 'mohamedabuassaf@.com',
-    #         'username': 'mohi45dd4',
-    #         'password': '12',
-    #         'repassword': '12'
-    #     }
+        register_data = {
+            'first_name': 'Mohamed',
+            'last_name': 'assaf',
+            'email': 'mohamedabuassaf@.com',
+            'username': 'mohi45dffd4',
+            'password': '12',
+            'repassword': '12'
+        }
         
-    #     response = requests.post('http://localhost:8000/register', data=register_data)
-    #     self.assertEqual(response.status_code, 200)
+        response = requests.post('http://localhost:8000/register', data=register_data)
+        self.assertEqual(response.status_code, 200)
         
-    #     response = requests.post('http://localhost:8000/register', data=register_data) ## registering again with the same user test
-    #     self.assertEqual(response.status_code, 400)
+        response = requests.post('http://localhost:8000/register', data=register_data) ## registering again with the same user test
+        self.assertEqual(response.status_code, 400)
         
         
-    # def test_login_page_post(self):
-    #     login_data = {
-    #         'username': 'mohi',
-    #         'password': '12',
-    #     }
-    #     response = requests.post('http://localhost:8000/login', data=login_data)
-    #     self.assertEqual(response.status_code, 200)
+    def test_login_page_post(self):
+        login_data = {
+            'username': 'mohi',
+            'password': '12',
+        }
+        response = requests.post('http://localhost:8000/login', data=login_data)
+        self.assertEqual(response.status_code, 200)
         
     # def test_update_page_post(self):
     #     login_data = {
