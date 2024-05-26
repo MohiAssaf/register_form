@@ -34,14 +34,22 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'text/html')
             self.end_headers()
             
-            with open('../frontend/html/logout.html', 'r') as file:
+            with open('../frontend/html/profile.html', 'r') as file:
                 html_page = file.read()
                 self.wfile.write(html_page.encode('utf-8'))
         elif path == '/logout':
             self.send_response(302)
             self.send_header('Location', '/login')
             self.end_headers()
+        
+        elif path == '/update-data':
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
             
+            with open('../frontend/html/update_data.html', 'r') as file:
+                html_page = file.read()
+                self.wfile.write(html_page.encode('utf-8'))
         else:
             self.send_response(404)
             self.end_headers()
