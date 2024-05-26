@@ -40,3 +40,8 @@ structure:
 ---profile.html : redirect page once succesful log in
 ---update_data.html : form to update the names and password of the logged in user
 
+
+TO RUN THE SERVER:
+
+head in the backend folder and run : server.py
+and add the credentials to your own DB
