@@ -81,6 +81,15 @@ class RequestHandler(BaseHTTPRequestHandler):
             conn = db_connection()
             cursor = conn.cursor()
             
+            cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+            user_exists = cursor.fetchone()
+            
+            if user_exists:
+                self.send_response(400)
+                self.end_headers()
+                self.wfile.write(b'Username Already Exists')
+                return
+            
             cursor.execute("INSERT INTO users (first_name, last_name, email, username, password) VALUES (%s, %s, %s, %s, %s)",
                                 (first_name, last_name, email, username, password))
             
