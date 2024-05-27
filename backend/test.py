@@ -1,7 +1,6 @@
 import unittest
 import threading
 import requests
-from http.server import HTTPServer
 from server import RequestHandler, ThreadedHTTPServer
 
 
@@ -33,9 +32,8 @@ class TestServer(unittest.TestCase):
         
     def test_update_page_get(self):
         response = requests.get('http://localhost:8000/update-data')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 401)
     
-        
         
     def test_register_page_post(self):
         
@@ -43,33 +41,38 @@ class TestServer(unittest.TestCase):
             'first_name': 'Mohamed',
             'last_name': 'assaf',
             'email': 'mohamedabuassaf@.com',
-            'username': 'mohi45dffd4',
+            'username': 'assafMo',
             'password': '12',
-            'repassword': '12'
+            'repassword': '12',
+            'captcha': 'BHJ4KJ'
         }
         
-        response = requests.post('http://localhost:8000/register', data=register_data)
+        response = requests.post('http://localhost:8000/register', data=register_data, cookies={'captcha': 'BHJ4KJ'})
         self.assertEqual(response.status_code, 200)
         
-        response = requests.post('http://localhost:8000/register', data=register_data) ## registering again with the same user test
+        response = requests.post('http://localhost:8000/register', data=register_data, cookies={'captcha': 'BHJ4KJ'}) ## registering again with the same user test
         self.assertEqual(response.status_code, 400)
         
         
     def test_login_page_post(self):
         login_data = {
-            'username': 'mohi',
+            'username': 'admin',
             'password': '12',
         }
         response = requests.post('http://localhost:8000/login', data=login_data)
         self.assertEqual(response.status_code, 200)
         
-    # def test_update_page_post(self):
-    #     login_data = {
-    #         'username': 'mohi',
-    #         'password': '12',
-    #     }
-    #     response = requests.post('http://localhost:8000/update-data', data=login_data)
-    #     self.assertEqual(response.status_code, 200)
+    def test_update_page_post(self):
+        update_data = {
+            'first_name': 'mish',
+            'last_name': 'assaf',
+            'newpassword': '12355',
+            'newrepassword': '12355'
+        }
+
+        response = requests.post('http://localhost:8000/update-data', data=update_data, cookies={'username': 'mohi45dd4'})
+        self.assertEqual(response.status_code, 200)
+        
         
 if __name__ == '__main__':
     unittest.main()
