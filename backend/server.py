@@ -1,9 +1,11 @@
 import socketserver
+import io
+import base64
 from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse, parse_qs
-from typing import Tuple
 from db import db_connection, init_table
+from generate_captcha import create_captcha_text, create_captcha_image
 
 
 class RequestHandler(BaseHTTPRequestHandler):
@@ -13,13 +15,22 @@ class RequestHandler(BaseHTTPRequestHandler):
         path = parsed_path.path
 
         if path == '/register':
+            captcha_text = create_captcha_text()
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
+            self.send_header('Set-Cookie', f'captcha={captcha_text}; Path=/')
             self.end_headers()
             
             with open('../frontend/html/register.html', 'r') as file:
                 html_page = file.read()
+                captcha_image = create_captcha_image(captcha_text)
+                with io.BytesIO() as output:
+                    captcha_image.save(output, format="PNG")
+                    captcha_data = output.getvalue()
+                captcha_base64 = base64.b64encode(captcha_data).decode('utf-8')
+                html_page = html_page.replace('{captcha_img}', f'<img src="data:image/png;base64,{captcha_base64}" alt="CAPTCHA">')
                 self.wfile.write(html_page.encode('utf-8'))
+                
         elif path == '/login':
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
@@ -40,10 +51,21 @@ class RequestHandler(BaseHTTPRequestHandler):
         elif path == '/logout':
             self.send_response(302)
             self.send_header('Set-Cookie', 'sessionid=; Max-Age=0; Path=/')
+            self.send_header('Set-Cookie', 'username=; Max-Age=0; Path=/')
             self.send_header('Location', '/login')
             self.end_headers()
         
         elif path == '/update-data':
+            cookie_header = self.headers.get('Cookie')
+            cookie = SimpleCookie(cookie_header)
+            username = cookie.get('username')
+            
+            if not username:
+                self.send_response(401)
+                self.end_headers()
+                self.wfile.write(b'Unauthorized')
+                return
+            
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
@@ -71,6 +93,24 @@ class RequestHandler(BaseHTTPRequestHandler):
             username = data.get('username')[0]
             password = data.get('password')[0]
             confirm_password = data.get('repassword')[0]
+            captcha_input = data.get('captcha')[0]
+            
+            cookie_header = self.headers.get('Cookie')
+            
+            if not cookie_header:
+                self.send_response(400)
+                self.end_headers()
+                self.wfile.write(b'Missing CAPTCHA')
+                return
+
+            cookie = SimpleCookie(cookie_header)
+            captcha_text = cookie.get('captcha').value
+
+            if captcha_input != captcha_text:
+                self.send_response(400)
+                self.end_headers()
+                self.wfile.write(b'Invalid CAPTCHA')
+                return
             
             if password != confirm_password:
                 self.send_response(400)
@@ -122,12 +162,6 @@ class RequestHandler(BaseHTTPRequestHandler):
                 
         elif path == '/update-data':
             cookie_header = self.headers.get('Cookie')
-            if not cookie_header:
-                self.send_response(401)
-                self.end_headers()
-                self.wfile.write(b'Unauthorized')
-                return
-            
             cookie = SimpleCookie(cookie_header)
             username = cookie.get('username').value
             
