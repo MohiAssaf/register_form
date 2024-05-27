@@ -13,6 +13,7 @@ class RequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         parsed_path = urlparse(self.path)
         path = parsed_path.path
+        print(path)
 
         if path == '/register':
             captcha_text = create_captcha_text()
@@ -73,6 +74,16 @@ class RequestHandler(BaseHTTPRequestHandler):
             with open('../frontend/html/update_data.html', 'r') as file:
                 html_page = file.read()
                 self.wfile.write(html_page.encode('utf-8'))
+                
+        elif path.endswith('.css'):
+            file_path = '../frontend' + path
+            content_type = 'text/css'
+                
+            with open(file_path, 'rb') as file:
+                self.send_response(200)
+                self.send_header('Content-type', content_type)
+                self.end_headers()
+                self.wfile.write(file.read())
         else:
             self.send_response(404)
             self.end_headers()
