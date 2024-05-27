@@ -37,7 +37,7 @@
     align-items: center;
 }
 
-.btns .btn{
+button{
     padding: 0.4rem 1rem;
     border: 1px solid black;
     border-radius: 1rem;
@@ -48,11 +48,13 @@
     cursor: pointer;
 }
 
-.btns .btn a{
+button a{
     text-decoration: none;
     color: whitesmoke;
 }
 
-.btns .btn:hover{
-    padding: 0.5rem 1.1rem;
+button:hover,
+button a:hover{
+    background-color: whitesmoke;
+    color: black;
 }
