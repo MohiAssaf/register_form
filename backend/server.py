@@ -146,7 +146,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             
             conn.commit()
             
-            self.send_response(302)
+            self.send_response(200)
             self.send_header('Location', '/login')
             self.end_headers()
             
@@ -161,7 +161,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             user = cursor.fetchone()
             
             if user:
-                self.send_response(302)
+                self.send_response(200)
                 self.send_header('Set-Cookie', f'username={username}; Path=/')
                 self.send_header('Location', '/logged-in')
                 self.end_headers()
@@ -211,7 +211,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             cursor.execute(f"UPDATE users SET {', '.join(update_fields)} WHERE username = %s", tuple(update_values))
             conn.commit()
             
-            self.send_response(302)
+            self.send_response(200)
             self.send_header('Location', '/logged-in')
             self.end_headers()
 
