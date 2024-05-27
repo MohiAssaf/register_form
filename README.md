@@ -17,6 +17,7 @@ psycopg2 to connect with a Postgres DB and get/post/put user data in a table use
 
 GET
 
+
 --Register Page: Serves the registration HTML page
 --Login Page: Serves the login HTML page
 --Logged-in Page: Serves a profile HTML page for logged-in users
