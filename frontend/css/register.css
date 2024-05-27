@@ -63,6 +63,17 @@ form{
     text-decoration: none;
 }
 
+.captcha{
+    display: flex;
+    align-items: center;
+    padding: 1.5rem 0;
+    gap: 5px;
+}
+
+.captcha input{
+    width: 50%;
+}
+
 .btn{
     width: 100%;
     padding: 0.5rem 1.5rem;
