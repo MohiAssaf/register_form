@@ -7,8 +7,9 @@ def create_captcha_text():
 
 
 def create_captcha_image(text):
-    font = ImageFont.load_default()
-    image = Image.new('RGB', (100, 20), color=(255, 0, 0))
+    font_size = 10
+    font = ImageFont.load_default(font_size)
+    image = Image.new('RGB', (60, 20), color=(173, 216, 230))
     draw = ImageDraw.Draw(image)
     draw.text((10, 5), text, font=font, fill=(0, 0, 0))
     return image
