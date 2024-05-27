@@ -1,4 +1,9 @@
 Technologies Used:
+
+--requests - for unittests
+--pillow - for the capcha
+--psycopg2 - for db connection and access the data in the users table
+
 Python Standard Libraries:
 --http.server 
 --http.cookies 
@@ -15,14 +20,14 @@ GET
 --Register Page: Serves the registration HTML page
 --Login Page: Serves the login HTML page
 --Logged-in Page: Serves a profile HTML page for logged-in users
---Logout: Clears the session cookie and redirects to the login page, still not working correctly
+--Logout: Clears the username cookie and redirects to the login page
 --Update Data Page: Serves an HTML page for updating user data
 
 POST 
 
 --Register: Extracts user registration details from the POST data. Validates password confirmation. Checks if the username already exists in the database. Inserts new user details into the database if validation passes. Redirects to the login page upon successful registration.
 
---Login: Extracts login credentials from the POST data. Validates the credentials against the database. Sets a cookie and redirects to the logged-in page if validation passes (still not working when logging out). Responds with an error if user doesnt exist.
+--Login: Extracts login credentials from the POST data. Validates the credentials against the database. Sets a cookie with the username and redirects to the logged-in page if validation passes (still not working when logging out). Responds with an error if user doesnt exist.
 
 --Update Data: Checks for a valid username cookie. Extracts updated user data from the POST data. Validates password confirmation. Updates user details in the database if validation passes. Redirects to the logged-in page upon successful update.
 
@@ -42,6 +47,11 @@ structure:
 
 
 TO RUN THE SERVER:
+
+install ->
+psycopg2
+pillow 
+requests
 
 head in the backend folder and run : server.py
 and add the credentials to your own DB
