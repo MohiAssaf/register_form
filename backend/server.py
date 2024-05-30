@@ -6,6 +6,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse, parse_qs
 from db import db_connection, init_table
 from generate_captcha import create_captcha_text, create_captcha_image
+from werkzeug.security import check_password_hash, generate_password_hash
 
 
 class RequestHandler(BaseHTTPRequestHandler):
@@ -51,7 +52,6 @@ class RequestHandler(BaseHTTPRequestHandler):
                 self.wfile.write(html_page.encode('utf-8'))
         elif path == '/logout':
             self.send_response(302)
-            self.send_header('Set-Cookie', 'sessionid=; Max-Age=0; Path=/')
             self.send_header('Set-Cookie', 'username=; Max-Age=0; Path=/')
             self.send_header('Location', '/login')
             self.end_headers()
@@ -142,11 +142,11 @@ class RequestHandler(BaseHTTPRequestHandler):
                 return
             
             cursor.execute("INSERT INTO users (first_name, last_name, email, username, password) VALUES (%s, %s, %s, %s, %s)",
-                                (first_name, last_name, email, username, password))
+                                (first_name, last_name, email, username, generate_password_hash(password)))
             
             conn.commit()
             
-            self.send_response(200)
+            self.send_response(302)
             self.send_header('Location', '/login')
             self.end_headers()
             
@@ -157,14 +157,22 @@ class RequestHandler(BaseHTTPRequestHandler):
             conn = db_connection()
             cursor = conn.cursor()
             
-            cursor.execute("SELECT * FROM users WHERE username = %s AND password = %s",(username, password))
+            cursor.execute("SELECT * FROM users WHERE username = %s", (username, ))
             user = cursor.fetchone()
-            
+
             if user:
-                self.send_response(200)
-                self.send_header('Set-Cookie', f'username={username}; Path=/')
-                self.send_header('Location', '/logged-in')
-                self.end_headers()
+                hashed_password = user[5]
+                print(hashed_password)
+                if check_password_hash(hashed_password, password):
+                    self.send_response(302)
+                    self.send_header('Set-Cookie', f'username={username}; Path=/')
+                    self.send_header('Location', '/logged-in')
+                    self.end_headers()
+                else:
+                    self.send_response(401)
+                    self.send_header('Content-Type', 'text/plain')
+                    self.end_headers()
+                    self.wfile.write(b'Passwords don\'t match')
             else:
                 self.send_response(401)
                 self.send_header('Content-Type', 'text/plain')
@@ -211,7 +219,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             cursor.execute(f"UPDATE users SET {', '.join(update_fields)} WHERE username = %s", tuple(update_values))
             conn.commit()
             
-            self.send_response(200)
+            self.send_response(302)
             self.send_header('Location', '/logged-in')
             self.end_headers()
 

@@ -56,8 +56,8 @@ class TestServer(unittest.TestCase):
         
     def test_login_page_post(self):
         login_data = {
-            'username': 'admin',
-            'password': '12',
+            'username': 'mohi',
+            'password': '123',
         }
         response = requests.post('http://localhost:8000/login', data=login_data)
         self.assertEqual(response.status_code, 200)
@@ -70,7 +70,7 @@ class TestServer(unittest.TestCase):
             'newrepassword': '12355'
         }
 
-        response = requests.post('http://localhost:8000/update-data', data=update_data, cookies={'username': 'mohi45dd4'})
+        response = requests.post('http://localhost:8000/update-data', data=update_data, cookies={'username': 'mohi'})
         self.assertEqual(response.status_code, 200)
         
         

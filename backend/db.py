@@ -17,7 +17,7 @@ def init_table():
             last_name VARCHAR(100) NOT NULL,
             email VARCHAR(100) NOT NULL,
             username VARCHAR(100) NOT NULL,
-            password VARCHAR(150) NOT NULL
+            password VARCHAR(250) NOT NULL
         )
     ''')
     conn.commit()
